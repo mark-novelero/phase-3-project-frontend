@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import FixedHeader from './fixed_header/FixedHeader';
+import MainPage from './main_component/MainPage';
+import "./App.css"
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends React.Component{
+
+  state = {
+    photos: [], 
+    selectPhoto: []
+  }
+
+  componentDidMount(){
+
+    let randomIndex = Math.floor(Math.random() * 30)
+
+      fetch('http://localhost:9292/photos')
+      .then(res => res.json())
+      .then(photographs => this.setState(
+          {photos: photographs, 
+           selectPhoto: photographs[randomIndex]
+        }
+      )
+    )    
 }
 
-export default App;
+
+  render() {
+    return (
+      <div className= "main">
+        <FixedHeader></FixedHeader>
+        <br></br>
+        <MainPage mainPhoto = {this.state.selectPhoto}></MainPage>
+        <br></br>
+      </div>
+    )
+  }
+}
