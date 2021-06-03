@@ -10,7 +10,7 @@ export default class MainPage extends React.Component{
       <div>
           <br></br>
           <br></br>
-        <MContainer mainPhoto = {this.props.mainPhoto}></MContainer>
+        <MContainer mainPhoto = {this.props.mainPhoto} addNewBlog = {this.props.addNewBlog}></MContainer>
       </div>
     )
   }
