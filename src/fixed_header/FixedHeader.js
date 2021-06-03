@@ -1,8 +1,12 @@
 import React from 'react'
 import './header.css';
+import { useHistory } from 'react-router-dom';
 
 
 const FixedHeader = (props) => {
+
+  const history = useHistory()
+
   return(
     <header className = "header">
         <nav className = "headerMenu">
