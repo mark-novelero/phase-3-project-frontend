@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import "./App.css"
 import FixedHeader from './fixed_header/FixedHeader';
 import MainPage from './main_component/MainPage';
 import "./App.css"
@@ -25,7 +27,7 @@ componentDidMount(){
 
     let randomIndex = Math.floor(Math.random() * 30)
 
-      fetch('http://localhost:9292/photos')
+      fetch('http://localhost:3000/photos')
       .then(res => res.json())
       .then(photographs => this.setState(
           {photos: photographs, 

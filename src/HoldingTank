@@ -6,15 +6,12 @@
 
        
        
-       
+  // site collection file     
 <SiteCollection sitePhotos = {this.state.photos} siteCollectionPhoto = {this.siteCollectionPhoto}
         siteSelectedPhoto = {this.state.siteSelectedPhoto} siteStories= {this.state.siteStories}
         siteDisplay = {this.state.siteCollectionDisplay}></SiteCollection>
 
-       <SiteCollection sitePhotos = {this.state.photos} siteCollectionPhoto = {this.siteCollectionPhoto}
-        siteSelectedphoto = {this.state.siteSelectedPhoto} siteStories= {this.state.siteStories}></SiteCollection>
-
-        <SiteBlogPage siteSelectedPhoto = {this.props.siteSelectedPhoto} siteStories = {this.props.siteStories}></SiteBlogPage>
+       
 
         {this.props.siteDisplay === "collection" ? this.props.sitePhotos.map(photos => <SiteCards  siteCollectionPhoto = {this.props.siteCollectionPhoto} photo = {photos}/>)
             : <SiteBlogPage siteSelectedPhoto = {this.props.siteSelectedPhoto} siteStories = {this.props.siteStories}></SiteBlogPage>}
