@@ -1,6 +1,6 @@
 import React from 'react'
-import { Grid, Menu, Image, TextArea, Form, Button, Segment, Header, Icon, Card } from 'semantic-ui-react'
-import UserCard from './user_collection/UserCard';
+import { Card } from 'semantic-ui-react'
+import UserCard from './UserCard';
 
 
 

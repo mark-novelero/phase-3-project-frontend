@@ -6,9 +6,17 @@ import MainPage from './main_component/MainPage';
 import LoginPage from './LoginPage';
 import NewStory from './new_story/NewStory';
 import UserCollection from './user_collection/UserCollection';
+import "./App.css"
+import PublishedBlog from './main_component/PublishedBlog';
+import SiteCollection from './SiteCollection/SiteCollection';
 
-export default class App extends Component{
+
+
+export default class App extends React.Component{
+
+
   state = {
+    allUsers: [],
     photos: [], 
     selectPhoto: [],
     blogs: [],
@@ -16,7 +24,11 @@ export default class App extends Component{
     userId: null,
     user_blogs: [],
     selected_user: null,
-    selected_blog: []
+    selected_blog: [],
+    display: true,
+    siteSelectedPhoto: [], 
+    siteStories: [],
+    siteCollectionDisplay: "collection"
   }
 
   setUser = (userObject) => {
@@ -45,7 +57,16 @@ export default class App extends Component{
     })
   }
 
-  componentDidMount(){
+  // componentDidMount(){
+  //   selectPhoto: [],  
+  //   blogs: [], 
+  //   display: true, 
+  //   siteSelectedPhoto: [], 
+  //   siteStories: [], 
+  //   siteCollectionDisplay: "collection"
+  // }
+
+componentDidMount(){
 
     let randomIndex = Math.floor(Math.random() * 30)
 
@@ -63,8 +84,23 @@ export default class App extends Component{
       .then(userBlogs => this.setState(
         {blogs: userBlogs}
       ))
-}
 
+      fetch('http://localhost:9292/users')
+      .then(res => res.json())
+      .then(users => this.setState(
+        {allUsers: users}
+      ))
+  } 
+
+siteCollectionPhoto = (obj) =>{  
+  const siteCollectionStories = this.state.blogs.filter(blogo => blogo.photo_ids === obj.id)
+  
+  this.setState({
+    siteSelectedPhoto: obj, 
+    siteStories: [...siteCollectionStories],
+    siteCollectionDisplay: "blog"
+  })
+}
 
   addNewBlog = (blogObj) =>{
     let newBlog = {
@@ -72,6 +108,9 @@ export default class App extends Component{
       photo_ids: blogObj.photo_ids, 
       story: blogObj.story 
     }
+    this.setState({
+      currentStory: blogObj.story
+    })
 
     fetch("http://localhost:9292/blogs", {
      method: "POST",
@@ -94,10 +133,27 @@ export default class App extends Component{
     newSelectedBlog.push(blogObj)
     this.setState({selected_blog: newSelectedBlog})
   }
+displayChange= () => {
+  this.setState({
+    display: !this.state.display
+  })
+}
+
+
+switchPhoto= () => {
+  let randomIndex2 = Math.floor(Math.random() * 30)
+  this.setState({
+    selectPhoto: this.state.photos[randomIndex2]
+  })
+}
+
 
 
 
   render() {
+   
+   
+    console.log()
 
     return (
       <Router>
@@ -110,7 +166,10 @@ export default class App extends Component{
               <LoginPage setUser={this.setUser} username={this.state.username} userId={this.state.username} />
             </Route>
             <Route exact path='/Home'>
-              <MainPage />
+              <MainPage mainPhoto = {this.state.selectPhoto} addNewBlog= {this.addNewBlog} switchPhoto = {this.switchPhoto} freshPage= {this.freshPage} display= {this.state.display} displayChange = {this.displayChange} />
+            </Route>
+            <Route>
+              <SiteCollection sitePhotos = {this.state.photos} siteCollectionPhoto = {this.siteCollectionPhoto} siteSelectedPhoto = {this.state.siteSelectedPhoto} siteStories= {this.state.siteStories} siteDisplay = {this.state.siteCollectionDisplay} />
             </Route>
             <Route exact path='/UserCollection'>
               <UserCollection username={this.state.username} userId={this.state.userId} mainPhoto={this.state.selectPhoto} user_blogs={this.state.user_Blogs} selected_blog={this.state.selected_blog} addToSelectedBlog={this.addToSelectedBlog} blogs={this.state.blogs} setSelectedBlog={this.setSelectedBlog} />
@@ -124,3 +183,4 @@ export default class App extends Component{
     )
   }
 }
+
