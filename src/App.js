@@ -18,6 +18,7 @@ export default class App extends React.Component{
     allUsers: [],
     photos: [], 
     selectPhoto: [],
+    currentStory: '',
     blogs: [],
     allUsers: [],
     username: '',
@@ -50,10 +51,12 @@ export default class App extends React.Component{
     })
 
   }
-  setUserBlogs = () => {
-    let blogsToDisplay = [...this.state.blogs].filter(blogObject => blogObject.user_id.includes(this.state.userId))
+  setUserBlogs = (obj) => {
+    // let blogsToDisplay = [...this.state.blogs].filter(blogObject => blogObject.user_id.includes(this.state.userId))
+   
+    let blogsToDisplay = this.state.blogs.filter(blogo => blogo.user_ids === obj.id)
     this.setState({
-      user_blogs: blogsToDisplay
+      user_blogs: [blogsToDisplay]
     })
   }
 
@@ -186,8 +189,19 @@ switchPhoto= () => {
   })
 }
 
+setCurrentStory= (e)=>{
+  this.setState({
+    currentStory: e.target.value
+  })
+}
 
-
+clearCurrentUser = () => {
+  this.setState({
+    username: '',
+    userId: null,
+    user_blogs: []
+  })
+}
 
   render() {
    
@@ -199,7 +213,7 @@ switchPhoto= () => {
         <div className= "main">
 
           <Route path='/'>
-            <FixedHeader setUser={this.setUser} username={this.state.username} user_blogs={this.state.user_blogs}/>
+            <FixedHeader setUser={this.setUser} username={this.state.username} user_blogs={this.state.user_blogs} clearCurrentUser={this.clearCurrentUser}/>
           </Route>
 
           <Switch>
@@ -209,7 +223,7 @@ switchPhoto= () => {
             </Route>
 
             <Route exact path='/Home'>
-              <MainPage setUserBlogs={this.setUserBlogs} photos={this.state.photos} selectPhoto={this.state.selectPhoto} blogs={this.state.blogs} allUsers={this.state.allUsers} username={this.state.username} userId={this.state.userId} user_blogs={this.state.user_blogs} addToSelectedBlog={this.state.addToSelectedBlog} mainPhoto = {this.state.selectPhoto} addNewBlog= {this.addNewBlog} switchPhoto = {this.switchPhoto} freshPage= {this.freshPage} display= {this.state.display} displayChange = {this.displayChange} />
+              <MainPage setUserBlogs={this.setUserBlogs} photos={this.state.photos} selectPhoto={this.state.selectPhoto} blogs={this.state.blogs} allUsers={this.state.allUsers} username={this.state.username} userId={this.state.userId} user_blogs={this.state.user_blogs} addToSelectedBlog={this.state.addToSelectedBlog} mainPhoto = {this.state.selectPhoto} addNewBlog= {this.addNewBlog} switchPhoto = {this.switchPhoto} freshPage= {this.freshPage} display= {this.state.display} displayChange = {this.displayChange} currentStory={this.state.current_story} setCurrentStory={this.setCurrentStory} />
             </Route>
 
             <Route exact path='/UserCollection'>
@@ -221,7 +235,7 @@ switchPhoto= () => {
             </Route>
 
             <Route exact path='/NewStory'>
-              <NewStory selectPhoto = {this.state.selectPhoto} userId={this.state.username} username={this.state.username} addNewBlog={this.addNewBlog} addToSelectedBlog={this.addToSelectedBlog} setUserBlogs={this.setUserBlogs} switchPhoto={this.switchPhoto}/>
+              <NewStory user_ids={this.state.user_ids}  selectPhoto = {this.state.selectPhoto} userId={this.state.username} username={this.state.username} addNewBlog={this.addNewBlog} addToSelectedBlog={this.addToSelectedBlog} setUserBlogs={this.setUserBlogs} switchPhoto={this.switchPhoto} setCurrentStory={this.setCurrentStory} currentStory={this.state.currentStory} displayChange={this.displayChange} story={this.state.story}/>
             </Route>
 
           </Switch>

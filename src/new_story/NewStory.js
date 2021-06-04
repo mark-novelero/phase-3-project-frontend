@@ -34,7 +34,7 @@ handleFormState = (e) => {
         <br></br>
           <Form onSubmit= {() => this.props.addNewBlog(this.state)} >
             <TextArea placeholder= "Your story" onChange = {(e) => this.handleFormState(e)} 
-            onChange= {(e)=> this.props.currentStory(e)} style={{ minHeight: 200 }}> Your Story</TextArea>
+            onChange= {(e)=> this.props.setCurrentStory(e)} style={{ minHeight: 200 }}> Your Story</TextArea>
             <Button.Group attached='bottom'>
                 <Button onClick= {() => this.props.displayChange()}  color = "gray">Publish</Button>
            </Button.Group>

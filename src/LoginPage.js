@@ -19,20 +19,28 @@ const LoginPage = (props) => {
             })
     }
 
-    const createUserBlogs = () => {
+    const createUserBlogs = (userObj) => {
         blogsToDisplay = [...props.blogs]
         blogsToDisplay.forEach(blogObject => {
-            if (blogObject.user_id === props.userId) {
+            if (blogObject.user_ids === userObj.Id) {
                 props.setUserBlogs(blogObject)
             }
         })
     }
+
+    // setUserBlogs = (userblog) => {
+    //     let newUserBlogs=[...this.state.user_blogs]
+    //     newUserBlogs.push(userblog)
+    //     this.setState({
+    //       user_blogs: newUserBlogs
+    //   })}
+
     const login = (e) => {
         checkIfUserExists(e.target.loginInput.value)
         .then(() => {
              if (foundUserObject !== undefined) {
                 props.setUser(foundUserObject)
-                createUserBlogs()
+                createUserBlogs(foundUserObject)
                 history.push('/Home')
              } else {
                  setBadLogin(true)

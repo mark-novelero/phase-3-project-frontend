@@ -55,7 +55,7 @@ const FixedHeader = (props) => {
 
         <Menu.Item name='userLogoutButton' onClick={() => {
           history.push("/")
-          props.setUser({username: '', userId: null})
+          props.clearCurrentUser()
         }}
           >
             Log Out
