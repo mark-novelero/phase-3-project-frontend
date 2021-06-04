@@ -6,9 +6,16 @@ import MainPage from './main_component/MainPage';
 import LoginPage from './LoginPage';
 import NewStory from './new_story/NewStory';
 import UserCollection from './user_collection/UserCollection';
+import PublishedBlog from './main_component/PublishedBlog';
+import SiteCollection from './SiteCollection/SiteCollection';
 
-export default class App extends Component{
+
+
+export default class App extends React.Component{
+
+
   state = {
+    allUsers: [],
     photos: [], 
     selectPhoto: [],
     blogs: [],
@@ -17,10 +24,49 @@ export default class App extends Component{
     userId: null,
     user_blogs: [],
     selected_user: null,
-    selected_blog: []
+    selected_blog: [],
+    display: true,
+    siteSelectedPhoto: [], 
+    siteStories: [],
+    siteCollectionDisplay: "collection"
   }
 
-  componentDidMount(){
+  setUser = (userObject) => {
+    this.setState({
+      username: userObject.username,
+      userId: userObject.id
+    })
+  }
+
+  setSelectedBlog = (blogObject) => {
+    this.setState({
+      selected_blog: blogObject.blog
+    })
+  }
+
+  setSelectedUser = (user) => {
+    this.setState({
+      selected_user: user.user_id
+    })
+
+  }
+  setUserBlogs = () => {
+    let blogsToDisplay = [...this.state.blogs].filter(blogObject => blogObject.user_id.includes(this.state.userId))
+    this.setState({
+      user_blogs: blogsToDisplay
+    })
+  }
+
+  // componentDidMount(){
+  //   selectPhoto: [],  
+  //   blogs: [], 
+  //   display: true, 
+  //   siteSelectedPhoto: [], 
+  //   siteStories: [], 
+  //   siteCollectionDisplay: "collection"
+  // }
+
+componentDidMount(){
 
     let randomIndex = Math.floor(Math.random() * 30)
 
@@ -46,6 +92,15 @@ export default class App extends Component{
       ))
   }
 
+siteCollectionPhoto = (obj) =>{  
+  const siteCollectionStories = this.state.blogs.filter(blogo => blogo.photo_ids === obj.id)
+  
+  this.setState({
+    siteSelectedPhoto: obj, 
+    siteStories: [...siteCollectionStories],
+    siteCollectionDisplay: "blog"
+  })
+}
 
   addNewBlog = (blogObj) =>{
     let newBlog = {
@@ -53,6 +108,9 @@ export default class App extends Component{
       photo_ids: blogObj.photo_ids, 
       story: blogObj.story 
     }
+    this.setState({
+      currentStory: blogObj.story
+    })
 
     fetch("http://localhost:9292/blogs", {
      method: "POST",
@@ -114,36 +172,63 @@ export default class App extends Component{
     newSelectedBlog.push(blogObj)
     this.setState({selected_blog: newSelectedBlog})
   }
+displayChange= () => {
+  this.setState({
+    display: !this.state.display
+  })
+}
+
+
+switchPhoto= () => {
+  let randomIndex2 = Math.floor(Math.random() * 30)
+  this.setState({
+    selectPhoto: this.state.photos[randomIndex2]
+  })
+}
+
 
 
 
   render() {
+   
+   
+    console.log()
 
     return (
       <Router>
         <div className= "main">
+
           <Route path='/'>
             <FixedHeader setUser={this.setUser} username={this.state.username} user_blogs={this.state.user_blogs}/>
           </Route>
+
           <Switch>
+
             <Route exact path='/'>
               <LoginPage setUser={this.setUser} username={this.state.username} userId={this.state.userId} allUsers={this.state.allUsers} addNewUser={this.addNewUser} user_blogs={this.state.user_blogs} blogs={this.state.blogs} setUserBlogs={this.setUserBlogs}/>
             </Route>
+
             <Route exact path='/Home'>
-              <MainPage setUserBlogs={this.setUserBlogs} photos={this.state.photos} selectPhoto={this.state.selectPhoto} blogs={this.state.blogs} allUsers={this.state.allUsers} username={this.state.username} userId={this.state.userId} user_blogs={this.state.user_blogs} addToSelectedBlog={this.state.addToSelectedBlog} />
+              <MainPage setUserBlogs={this.setUserBlogs} photos={this.state.photos} selectPhoto={this.state.selectPhoto} blogs={this.state.blogs} allUsers={this.state.allUsers} username={this.state.username} userId={this.state.userId} user_blogs={this.state.user_blogs} addToSelectedBlog={this.state.addToSelectedBlog} mainPhoto = {this.state.selectPhoto} addNewBlog= {this.addNewBlog} switchPhoto = {this.switchPhoto} freshPage= {this.freshPage} display= {this.state.display} displayChange = {this.displayChange} />
             </Route>
+
             <Route exact path='/UserCollection'>
               <UserCollection username={this.state.username} userId={this.state.userId} selectPhoto={this.state.selectPhoto} user_blogs={this.state.user_blogs} selected_blog={this.state.selected_blog} addToSelectedBlog={this.addToSelectedBlog} blogs={this.state.blogs} setSelectedBlog={this.setSelectedBlog} setUserBlogs={this.setUserBlogs}/>
             </Route>
+
             <Route exact path='/SiteCollection'>
-              {/* <SiteCollection /> */}
+              <SiteCollection sitePhotos = {this.state.photos} siteCollectionPhoto = {this.siteCollectionPhoto} siteSelectedPhoto = {this.state.siteSelectedPhoto} siteStories= {this.state.siteStories} siteDisplay = {this.state.siteCollectionDisplay} />
             </Route>
+
             <Route exact path='/NewStory'>
-              <NewStory selectPhoto = {this.state.selectPhoto} userId={this.state.username} username={this.state.username} addNewBlog={this.addNewBlog} addToSelectedBlog={this.addToSelectedBlog} setUserBlogs={this.setUserBlogs}/>
+              <NewStory selectPhoto = {this.state.selectPhoto} userId={this.state.username} username={this.state.username} addNewBlog={this.addNewBlog} addToSelectedBlog={this.addToSelectedBlog} setUserBlogs={this.setUserBlogs} switchPhoto={this.switchPhoto}/>
             </Route>
+
           </Switch>
+
         </div>
       </Router>
     )
   }
 }
+

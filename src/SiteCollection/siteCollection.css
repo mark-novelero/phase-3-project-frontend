@@ -1,0 +1,10 @@
+
+.site_photos{
+   display: grid; 
+   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+   grid-gap: 5px;
+}
+
+.site_photos img{
+    width: 255px;
+}
