@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useHistory } from 'react-router'
 import { Form, Button, Segment, Header, Divider, Grid, Message } from 'semantic-ui-react'
 
-const LoginAndRegister = (props) => {
+const LoginPage = (props) => {
     
     const [badLogin, setBadLogin] = useState(false)
     const [badRegister, setBadRegister] = useState(false)
@@ -96,4 +96,4 @@ const LoginAndRegister = (props) => {
     )
 }
 
-export default LoginAndRegister
+export default LoginPage

@@ -4,13 +4,19 @@ import "./App.css"
 import FixedHeader from './fixed_header/FixedHeader';
 import MainPage from './main_component/MainPage';
 import LoginPage from './LoginPage';
+import NewStory from './new_story/NewStory';
+import UserCollection from './user_collection/UserCollection';
 
 export default class App extends Component{
   state = {
     photos: [], 
     selectPhoto: [],
+    blogs: [],
     username: '',
-    userId: null
+    userId: null,
+    user_blogs: [],
+    selected_user: null,
+    selected_blog: []
   }
 
   setUser = (userObject) => {
@@ -20,15 +26,34 @@ export default class App extends Component{
     })
   }
 
+  setSelectedBlog = (blogObject) => {
+    this.setState({
+      selected_blog: blogObject.blog
+    })
+  }
+
+  setSelectedUser = (user) => {
+    this.setState({
+      selected_user: user.user_id
+    })
+
+  }
+  setUserBlogs = () => {
+    let blogsToDisplay = [...this.state.blogs].filter(blogObject => blogObject.user_id.includes(this.state.userId))
+    this.setState({
+      user_blogs: blogsToDisplay
+    })
+  }
+
   componentDidMount(){
 
     let randomIndex = Math.floor(Math.random() * 30)
 
-      fetch('http://localhost:3000/photos')
+      fetch('http://localhost:9292/photos')
       .then(res => res.json())
       .then(photographs => this.setState(
           {photos: photographs, 
-           selectPhoto: photographs[randomIndex]
+           selectPhoto: photographs[randomIndex],
         }
       )
     )
@@ -41,7 +66,7 @@ export default class App extends Component{
 }
 
 
-addNewBlog = (blogObj) =>{
+  addNewBlog = (blogObj) =>{
     let newBlog = {
       user_ids: blogObj.user_ids, 
       photo_ids: blogObj.photo_ids, 
@@ -63,7 +88,12 @@ addNewBlog = (blogObj) =>{
   })
 }
 
-
+  addToSelectedBlog = (blogObj) =>{
+    this.setState({selected_blog: this.state.selected_blog.shift()})
+    let newSelectedBlog=[...this.state.selected_blog]
+    newSelectedBlog.push(blogObj)
+    this.setState({selected_blog: newSelectedBlog})
+  }
 
 
 
@@ -73,14 +103,20 @@ addNewBlog = (blogObj) =>{
       <Router>
         <div className= "main">
           <Route path='/'>
-            <FixedHeader/>
+            <FixedHeader setUser={this.setUser}/>
           </Route>
           <Switch>
             <Route exact path='/'>
-              <LoginPage setUser={this.setUser}/>
+              <LoginPage setUser={this.setUser} username={this.state.username} userId={this.state.username} />
             </Route>
             <Route exact path='/Home'>
-              <MainPage mainPhoto = {this.state.selectPhoto} userId={this.state.username} username={this.state.username}/>
+              <MainPage />
+            </Route>
+            <Route exact path='/UserCollection'>
+              <UserCollection username={this.state.username} userId={this.state.userId} mainPhoto={this.state.selectPhoto} user_blogs={this.state.user_Blogs} selected_blog={this.state.selected_blog} addToSelectedBlog={this.addToSelectedBlog} blogs={this.state.blogs} setSelectedBlog={this.setSelectedBlog} />
+            </Route>
+            <Route exact path='/NewStory'>
+              <NewStory mainPhoto = {this.state.selectPhoto} userId={this.state.username} username={this.state.username} addNewBlog={this.addNewBlog} addToSelectedBlog={this.addToSelectedBlog} />
             </Route>
           </Switch>
         </div>
