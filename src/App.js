@@ -27,11 +27,11 @@ export default class App extends Component{
       fetch('http://localhost:9292/photos')
       .then(res => res.json())
       .then(photographs => this.setState(
-          {photos: photographs, 
-           selectPhoto: photographs[randomIndex],
+        {photos: photographs, 
+          selectPhoto: photographs[randomIndex],
         }
       )
-    )
+      )
     
       fetch('http://localhost:9292/blogs')
       .then(res => res.json())
@@ -73,6 +73,7 @@ export default class App extends Component{
     this.setState({
       username: userObject.username,
       userId: userObject.id
+      
     })
   }
 
@@ -93,12 +94,19 @@ export default class App extends Component{
     })
 
   }
-  setUserBlogs = () => {
-    let blogsToDisplay = [...this.state.blogs].filter(blogObject => blogObject.user_id.includes(this.state.userId))
+  // setUserBlogs = () => {
+  //   let blogsToDisplay = [...this.state.blogs]
+  //   blogsToDisplay.filter(blogObject => (blogObject.user_id.includes(this.state.userId)))
+  //   this.setState({
+  //     user_blogs: blogsToDisplay
+  //   })
+  // }
+  setUserBlogs = (userblog) => {
+    let newUserBlogs=[...this.state.user_blogs]
+    newUserBlogs.push(userblog)
     this.setState({
-      user_blogs: blogsToDisplay
-    })
-  }
+      user_blogs: newUserBlogs
+  })}
 
   addToSelectedBlog = (blogObj) =>{
     this.setState({selected_blog: this.state.selected_blog.shift()})
@@ -115,17 +123,20 @@ export default class App extends Component{
       <Router>
         <div className= "main">
           <Route path='/'>
-            <FixedHeader setUser={this.setUser}/>
+            <FixedHeader setUser={this.setUser} username={this.state.username} user_blogs={this.state.user_blogs}/>
           </Route>
           <Switch>
             <Route exact path='/'>
-              <LoginPage setUser={this.setUser} username={this.state.username} userId={this.state.userId} allUsers={this.state.allUsers} addNewUser={this.addNewUser} setUserBlogs={this.setUserBlogs}/>
+              <LoginPage setUser={this.setUser} username={this.state.username} userId={this.state.userId} allUsers={this.state.allUsers} addNewUser={this.addNewUser} user_blogs={this.state.user_blogs} blogs={this.state.blogs} setUserBlogs={this.setUserBlogs}/>
             </Route>
             <Route exact path='/Home'>
               <MainPage setUserBlogs={this.setUserBlogs} photos={this.state.photos} selectPhoto={this.state.selectPhoto} blogs={this.state.blogs} allUsers={this.state.allUsers} username={this.state.username} userId={this.state.userId} user_blogs={this.state.user_blogs} addToSelectedBlog={this.state.addToSelectedBlog} />
             </Route>
             <Route exact path='/UserCollection'>
               <UserCollection username={this.state.username} userId={this.state.userId} selectPhoto={this.state.selectPhoto} user_blogs={this.state.user_blogs} selected_blog={this.state.selected_blog} addToSelectedBlog={this.addToSelectedBlog} blogs={this.state.blogs} setSelectedBlog={this.setSelectedBlog} setUserBlogs={this.setUserBlogs}/>
+            </Route>
+            <Route exact path='/SiteCollection'>
+              {/* <SiteCollection /> */}
             </Route>
             <Route exact path='/NewStory'>
               <NewStory selectPhoto = {this.state.selectPhoto} userId={this.state.username} username={this.state.username} addNewBlog={this.addNewBlog} addToSelectedBlog={this.addToSelectedBlog} setUserBlogs={this.setUserBlogs}/>

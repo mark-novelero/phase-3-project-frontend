@@ -8,6 +8,7 @@ const LoginPage = (props) => {
     const [badRegister, setBadRegister] = useState(false)
     const history = useHistory()
     let foundUserObject
+    let blogsToDisplay
 
     const checkIfUserExists = (userString) => {
 
@@ -18,11 +19,20 @@ const LoginPage = (props) => {
             })
     }
 
+    const createUserBlogs = () => {
+        blogsToDisplay = [...props.blogs]
+        blogsToDisplay.forEach(blogObject => {
+            if (blogObject.user_id === props.userId) {
+                props.setUserBlogs(blogObject)
+            }
+        })
+    }
     const login = (e) => {
         checkIfUserExists(e.target.loginInput.value)
         .then(() => {
              if (foundUserObject !== undefined) {
                 props.setUser(foundUserObject)
+                createUserBlogs()
                 history.push('/Home')
              } else {
                  setBadLogin(true)
