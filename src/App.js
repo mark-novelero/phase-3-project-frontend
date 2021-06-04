@@ -12,37 +12,12 @@ export default class App extends Component{
     photos: [], 
     selectPhoto: [],
     blogs: [],
+    allUsers: [],
     username: '',
     userId: null,
     user_blogs: [],
     selected_user: null,
     selected_blog: []
-  }
-
-  setUser = (userObject) => {
-    this.setState({
-      username: userObject.username,
-      userId: userObject.id
-    })
-  }
-
-  setSelectedBlog = (blogObject) => {
-    this.setState({
-      selected_blog: blogObject.blog
-    })
-  }
-
-  setSelectedUser = (user) => {
-    this.setState({
-      selected_user: user.user_id
-    })
-
-  }
-  setUserBlogs = () => {
-    let blogsToDisplay = [...this.state.blogs].filter(blogObject => blogObject.user_id.includes(this.state.userId))
-    this.setState({
-      user_blogs: blogsToDisplay
-    })
   }
 
   componentDidMount(){
@@ -63,7 +38,13 @@ export default class App extends Component{
       .then(userBlogs => this.setState(
         {blogs: userBlogs}
       ))
-}
+
+      fetch('http://localhost:9292/users')
+      .then(res => res.json())
+      .then(users => this.setState(
+        {allUsers: users}
+      ))
+  }
 
 
   addNewBlog = (blogObj) =>{
@@ -88,6 +69,37 @@ export default class App extends Component{
   })
 }
 
+  setUser = (userObject) => {
+    this.setState({
+      username: userObject.username,
+      userId: userObject.id
+    })
+  }
+
+  addNewUser = (newUser) => {
+      let newAllUsers=[...this.state.allUsers, newUser]
+      this.setState({allUsers: newAllUsers})
+  }
+
+  // setSelectedBlog = (blogObject) => {
+  //   this.setState({
+  //     selected_blog: blogObject.blog
+  //   })
+  // }
+
+  setSelectedUser = (user) => {
+    this.setState({
+      selected_user: user.user_id
+    })
+
+  }
+  setUserBlogs = () => {
+    let blogsToDisplay = [...this.state.blogs].filter(blogObject => blogObject.user_id.includes(this.state.userId))
+    this.setState({
+      user_blogs: blogsToDisplay
+    })
+  }
+
   addToSelectedBlog = (blogObj) =>{
     this.setState({selected_blog: this.state.selected_blog.shift()})
     let newSelectedBlog=[...this.state.selected_blog]
@@ -107,16 +119,16 @@ export default class App extends Component{
           </Route>
           <Switch>
             <Route exact path='/'>
-              <LoginPage setUser={this.setUser} username={this.state.username} userId={this.state.username} />
+              <LoginPage setUser={this.setUser} username={this.state.username} userId={this.state.userId} allUsers={this.state.allUsers} addNewUser={this.addNewUser} setUserBlogs={this.setUserBlogs}/>
             </Route>
             <Route exact path='/Home'>
-              <MainPage />
+              <MainPage setUserBlogs={this.setUserBlogs} photos={this.state.photos} selectPhoto={this.state.selectPhoto} blogs={this.state.blogs} allUsers={this.state.allUsers} username={this.state.username} userId={this.state.userId} user_blogs={this.state.user_blogs} addToSelectedBlog={this.state.addToSelectedBlog} />
             </Route>
             <Route exact path='/UserCollection'>
-              <UserCollection username={this.state.username} userId={this.state.userId} mainPhoto={this.state.selectPhoto} user_blogs={this.state.user_Blogs} selected_blog={this.state.selected_blog} addToSelectedBlog={this.addToSelectedBlog} blogs={this.state.blogs} setSelectedBlog={this.setSelectedBlog} />
+              <UserCollection username={this.state.username} userId={this.state.userId} selectPhoto={this.state.selectPhoto} user_blogs={this.state.user_blogs} selected_blog={this.state.selected_blog} addToSelectedBlog={this.addToSelectedBlog} blogs={this.state.blogs} setSelectedBlog={this.setSelectedBlog} setUserBlogs={this.setUserBlogs}/>
             </Route>
             <Route exact path='/NewStory'>
-              <NewStory mainPhoto = {this.state.selectPhoto} userId={this.state.username} username={this.state.username} addNewBlog={this.addNewBlog} addToSelectedBlog={this.addToSelectedBlog} />
+              <NewStory selectPhoto = {this.state.selectPhoto} userId={this.state.username} username={this.state.username} addNewBlog={this.addNewBlog} addToSelectedBlog={this.addToSelectedBlog} setUserBlogs={this.setUserBlogs}/>
             </Route>
           </Switch>
         </div>

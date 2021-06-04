@@ -1,7 +1,7 @@
 import React from 'react'
 import './header.css';
 import { useHistory } from 'react-router-dom';
-import { Menu, Message } from 'semantic-ui-react'
+import { Menu} from 'semantic-ui-react'
 
 const FixedHeader = (props) => {
 

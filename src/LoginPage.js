@@ -38,24 +38,24 @@ const LoginPage = (props) => {
                 let newUserObject = {
                     username: e.target.registerInput.value
                 }
-                let postConfig = {
+                return fetch("http://localhost:9292/users", {
                     method: "POST",
                     headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(newUserObject),
-                  }
-                fetch('http://localhost:9292/users', postConfig)
-                  .then(r => r.json())
-                  .then(postedUserObject => {
-                      props.setUser(postedUserObject)
-                      history.push('/Home')
+                    "Content-Type": "application/json",
+                  },
+                     body: JSON.stringify(newUserObject),
                   })
-             } else {
-                 setBadRegister(true)
-                 setTimeout(() => setBadRegister(false), 3000)
-             }
-            })
+                   .then (res => res.json())
+                   .then (newUser => {
+                    props.addNewUser(newUser)
+                    props.setUser(newUser)
+                    history.push('/Home')
+                   })
+            } else {
+                setBadRegister(true)
+                setTimeout(() => setBadRegister(false), 3000)
+            }   
+        })
     }
 
     return (
@@ -92,8 +92,6 @@ const LoginPage = (props) => {
             </Grid>
             <Divider vertical>Or</Divider>
         </Segment>
-
     )
 }
-
 export default LoginPage

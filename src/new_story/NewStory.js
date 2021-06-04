@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Image, TextArea, Form, Button, Segment, Header, Icon } from 'semantic-ui-react'
+import { Image, TextArea, Form, Button, Segment } from 'semantic-ui-react'
 
 
 export default class NewStory extends React.Component {
@@ -22,7 +22,7 @@ handleFormState = (e) => {
   
       <div>
         <Segment>
-          <Image size= "huge" fluid src= {this.props.mainPhoto.photo_url}></Image>
+          <Image size= "huge" fluid src= {this.props.selectPhoto.photo_url}></Image>
           <Form onSubmit= {() => {
                 this.props.addNewBlog(this.state)
                 this.props.addToSelectedBlog(this.state)

@@ -1,13 +1,11 @@
 import React from 'react'
-import { Grid, Menu, Image, TextArea, Form, Button, Segment, Header, Icon, Card } from 'semantic-ui-react'
+import { Grid, Segment } from 'semantic-ui-react'
 import UserCardContainer from './UserCardContainer';
 
 
 
 
 export default class UserCollection extends React.Component {
-
-
   
   render() {
     return (
@@ -41,17 +39,3 @@ export default class UserCollection extends React.Component {
     );
   }
 }
-      // <Menu color="grey" fluid vertical tabular>
-      //   <Menu.Item header as="h1">
-      //     Previous Blog Posts
-      //   </Menu.Item>
-      //   {this.props.user_blogs.map(blogObject => {
-      //     <Menu.Item
-      //       name="All"
-      //       active=}
-      //       onClick={() => {
-      //       props.setFilter("");
-      //       }}>
-      //     </Menu.Item>})
-      //   }
-      // </Menu>
