@@ -2,17 +2,26 @@ import React from 'react';
 import FixedHeader from './fixed_header/FixedHeader';
 import MainPage from './main_component/MainPage';
 import "./App.css"
+import Blog from './main_component/PublishedBlog';
+import SiteCollection from './SiteCollection/SiteCollection';
 
 
 
 export default class App extends React.Component{
+
+
   state = {
+    allUsers: [],
     photos: [], 
     selectPhoto: [],  
-    blogs: [] 
+    blogs: [], 
+    display: true, 
+    siteSelectedPhoto: [], 
+    siteStories: [], 
+    siteCollectionDisplay: "collection"
   }
 
-  componentDidMount(){
+componentDidMount(){
 
     let randomIndex = Math.floor(Math.random() * 30)
 
@@ -30,8 +39,23 @@ export default class App extends React.Component{
       .then(userBlogs => this.setState(
         {blogs: userBlogs}
       ))
-}
 
+      fetch('http://localhost:9292/users')
+      .then(res => res.json())
+      .then(users => this.setState(
+        {allUsers: users}
+      ))
+  } 
+
+siteCollectionPhoto = (obj) =>{  
+  const siteCollectionStories = this.state.blogs.filter(blogo => blogo.photo_ids === obj.id)
+  
+  this.setState({
+    siteSelectedPhoto: obj, 
+    siteStories: [...siteCollectionStories],
+    siteCollectionDisplay: "blog"
+  })
+}
 
 addNewBlog = (blogObj) =>{
     let newBlog = {
@@ -39,6 +63,9 @@ addNewBlog = (blogObj) =>{
       photo_ids: blogObj.photo_ids, 
       story: blogObj.story 
     }
+    this.setState({
+      currentStory: blogObj.story
+    })
 
     fetch("http://localhost:9292/blogs", {
      method: "POST",
@@ -55,18 +82,36 @@ addNewBlog = (blogObj) =>{
   })
 }
 
+displayChange= () => {
+  this.setState({
+    display: !this.state.display
+  })
+}
+
+
+switchPhoto= () => {
+  let randomIndex2 = Math.floor(Math.random() * 30)
+  this.setState({
+    selectPhoto: this.state.photos[randomIndex2]
+  })
+}
 
 
 
 
   render() {
+   
+   
+    console.log()
 
     return (
       <div className= "main">
         <FixedHeader></FixedHeader>
-        <MainPage mainPhoto = {this.state.selectPhoto} addNewBlog= {this.addNewBlog}></MainPage>
-        <br></br>
-      </div>
+        <SiteCollection sitePhotos = {this.state.photos} siteCollectionPhoto = {this.siteCollectionPhoto}
+        siteSelectedPhoto = {this.state.siteSelectedPhoto} siteStories= {this.state.siteStories}
+        siteDisplay = {this.state.siteCollectionDisplay}></SiteCollection>
+        </div>
     )
   }
 }
+
